@@ -443,8 +443,8 @@ class RuleManager:
 
         errors = []
         for rule_type in RuleType:
-            for rule in sorted(self.rules[rule_type], 
-                             key=lambda r: r.priority.value):
+            for rule in sorted(self.rules[rule_type],
+                               key=lambda r: r.priority.value):
                 if not rule.enabled:
                     continue
 
@@ -463,7 +463,7 @@ class RuleManager:
         """获取活动的规则"""
         if rule_type:
             return [rule for rule in self.rules[rule_type] if rule.enabled]
-        return [rule for rules in self.rules.values() 
+        return [rule for rules in self.rules.values()
                 for rule in rules if rule.enabled]
 
     def _clear_cache(self) -> None:
@@ -480,7 +480,7 @@ class RuleManager:
         self.add_rule(SubjectConsecutiveRule())
         self.add_rule(TeacherAvailabilityRule())
         self.add_rule(ClassroomCapacityRule())
-        
+
         # 可以添加更多默认规则...
         logger.info("已创建默认规则集")
 
@@ -510,49 +510,3 @@ class RuleManager:
                 pass
         return manager
 
-# ====================== 使用示例 ======================
-"""if __name__ == "__main__":
-    # 修正后的示例用户输入数据
-    sample_input = {
-        "subjects": [
-            {"name": "math", "category": "main", "priority": 1},
-            {"name": "physics", "category": "science", "priority": 2}
-        ],
-        "teachers": [
-            {"name": "张老师", "subjects": ["math", "physics"]},
-            {"name": "李老师", "subjects": ["physics"]}
-        ],
-        "classrooms": [
-            {"name": "101", "capacity": 40},
-            {"name": "lab1", "capacity": 40, "special": True}
-        ],
-        "classes": [
-            {"name": "class1", "size": 30},
-            {"name": "class2", "size": 35}
-        ],
-        "schedule_attempts": [
-            {
-                "subject": "math",
-                "teacher": "张老师",
-                "classroom": "101",
-                "class": "class1",
-                "weekday": "Monday",
-                "period": 1,
-                "day_part": "MORNING"  # 添加的字段
-            },
-            {
-                "subject": "physics",
-                "teacher": "李老师",
-                "classroom": "lab1",
-                "class": "class2",
-                "weekday": "Monday",
-                "period": 2,
-                "day_part": "MORNING"  # 添加的字段
-            }
-        ]
-    }
-
-    scheduler = Scheduler()
-    result = scheduler.generate_schedule(sample_input)
-    print(json.dumps(result, indent=2))
-"""

@@ -149,7 +149,7 @@ class TimeTable:
     def get_period_time(self, period: int) -> Tuple[str, str]:
         """获取指定课节的开始和结束时间"""
         total_duration = self.class_duration + self.break_duration
-        
+
         # 确定基准时间
         if period <= self.periods_per_morning:
             base_time = self.morning_start
@@ -166,22 +166,22 @@ class TimeTable:
         minutes_from_base = (period - 1) * total_duration
         start_hour = base_time.hour + minutes_from_base // 60
         start_minute = base_time.minute + minutes_from_base % 60
-        
+
         if start_minute >= 60:
             start_hour += 1
             start_minute -= 60
-            
+
         start_time = f"{start_hour:02d}:{start_minute:02d}"
 
         # 计算结束时间
         end_minutes = minutes_from_base + self.class_duration
         end_hour = base_time.hour + end_minutes // 60
         end_minute = base_time.minute + end_minutes % 60
-        
+
         if end_minute >= 60:
             end_hour += 1
             end_minute -= 60
-            
+
         end_time = f"{end_hour:02d}:{end_minute:02d}"
 
         return start_time, end_time
@@ -189,27 +189,27 @@ class TimeTable:
     def get_all_periods(self) -> List[Tuple[int, str, str]]:
         """获取所有课节的时间安排"""
         periods = []
-        total_periods = (self.periods_per_morning + 
-                        self.periods_per_afternoon + 
-                        self.periods_per_evening)
-        
+        total_periods = (self.periods_per_morning +
+                         self.periods_per_afternoon +
+                         self.periods_per_evening)
+
         for period in range(1, total_periods + 1):
             start_time, end_time = self.get_period_time(period)
             periods.append((period, start_time, end_time))
-            
+
         return periods
 
     def is_valid_period(self, period: int) -> bool:
         """检查课节编号是否有效"""
-        return 1 <= period <= (self.periods_per_morning + 
-                             self.periods_per_afternoon + 
-                             self.periods_per_evening)
+        return 1 <= period <= (self.periods_per_morning +
+                               self.periods_per_afternoon +
+                               self.periods_per_evening)
 
     def get_day_part(self, period: int) -> DayPart:
         """获取课节所属的时间段（上午/下午/晚上）"""
         if not self.is_valid_period(period):
             raise ValueError(f"Invalid period number: {period}")
-            
+
         if period <= self.periods_per_morning:
             return DayPart.MORNING
         elif period <= self.periods_per_morning + self.periods_per_afternoon:
@@ -281,11 +281,11 @@ class Schedule:
         for entry in self.entries:
             # 检查时间冲突
             if entry.time_slot.weekday == new_entry.time_slot.weekday and \
-               entry.time_slot.period_number == new_entry.time_slot.period_number:
+                    entry.time_slot.period_number == new_entry.time_slot.period_number:
                 # 同一时间段的冲突检查
                 if (entry.class_info == new_entry.class_info or  # 同一班级
-                    entry.teacher == new_entry.teacher or        # 同一教师
-                    entry.classroom == new_entry.classroom):     # 同一教室
+                        entry.teacher == new_entry.teacher or        # 同一教师
+                        entry.classroom == new_entry.classroom):     # 同一教室
                     return True
         return False
 
