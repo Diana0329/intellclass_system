@@ -6,6 +6,7 @@ import itertools
 import logging
 from abc import ABC, abstractmethod
 import json
+from datetime import time
 
 # 初始化日志
 logger = logging.getLogger(__name__)
@@ -150,30 +151,12 @@ class TeacherAvailabilityRule(Rule):
             )
         return RuleResult(True)
 
-class ClassroomCapacityRule(Rule):
-    """教室容量检查"""
-    def __init__(self):
-        super().__init__(
-            name="教室容量检查",
-            rule_type=RuleType.CLASSROOM,
-            priority=RulePriority.MANDATORY
-        )
-
-    def check(self, schedule: Schedule, entry: ScheduleEntry) -> RuleResult:
-        if entry.classroom.capacity < entry.student_class.size:
-            return RuleResult(
-                False,
-                f"教室 '{entry.classroom.name}' 容量不足"
-            )
-        return RuleResult(True)
-
 # ====================== 交互式排课系统 ======================
 class Scheduler:
     def __init__(self):
         self.rules: List[Rule] = [
             SubjectConsecutiveRule(),
-            TeacherAvailabilityRule(),
-            ClassroomCapacityRule()
+            TeacherAvailabilityRule()
         ]
         self.schedule = Schedule()
 
@@ -479,9 +462,7 @@ class RuleManager:
         # 添加基本规则
         self.add_rule(SubjectConsecutiveRule())
         self.add_rule(TeacherAvailabilityRule())
-        self.add_rule(ClassroomCapacityRule())
 
-        # 可以添加更多默认规则...
         logger.info("已创建默认规则集")
 
     def to_dict(self) -> Dict:

@@ -262,20 +262,8 @@
 </head>
 
 <body>
-<!-- 登录界面 -->
-<div id="login-container">
-    <div class="login-logo">
-        <h1>智能排课系统</h1>
-    </div>
-    <form id="login-form" onsubmit="return false;">
-        <input type="text" id="username" placeholder="用户名" required>
-        <input type="password" id="password" placeholder="密码" required>
-        <button type="submit" class="login-button">登录</button>
-    </form>
-</div>
-
 <!-- 功能导航栏和排课相关界面，初始隐藏 -->
-<nav id="navbar" style="display: none;">
+<nav id="navbar" style="display: block;">
     <ul>
         <li><a href="#">帮助手册</a></li>
         <li><a href="#" data-target="timetable-creation">课表创建</a></li>
@@ -287,7 +275,7 @@
 </nav>
 
 <!-- 第一页：课表创建 -->
-<div id="timetable-creation" class="content" style="display: none;">
+<div id="timetable-creation" class="content" style="display: block;">
     <h2>课表创建</h2>
     <form id="createTimetableForm">
         <input type="text" id="timetable-name" placeholder="课表名称" required>
@@ -425,6 +413,18 @@
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const navbar = document.getElementById('navbar');
+        const createTimetableForm = document.getElementById('createTimetableForm');
+        const timetableCreationSection = document.getElementById('timetable-creation');
+
+        // 创建一个 Axios 实例
+        const apiClient = axios.create({
+            baseURL: 'http://192.168.43.34:5000', // 后端 API 基础 URL
+            timeout: 10000, // 请求超时 (10秒)
+            headers: { 'Content-Type': 'application/json' } // 默认发送 JSON 格式
+        });
+
     // 全局变量，用于存储课表信息
     let timetableData = {};
     let courseData = [];
@@ -754,21 +754,8 @@
             }
         });
     }
-
-    // 在页面加载时添加登录功能
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('login-form').addEventListener('submit', function() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-
-            // 简单的验证逻辑，实际应用中应使用安全的认证方式
-            if (username && password) {
-                document.getElementById('login-container').style.display = 'none';
-                document.getElementById('navbar').style.display = 'block';
-                showPage('timetable-creation');
-            }
-        });
-
+    showPage('timetable-creation'); // 显示课表创建页
+    
         // 导航栏点击事件
         document.querySelectorAll('#navbar a[data-target]').forEach(function(link) {
             link.addEventListener('click', function(e) {

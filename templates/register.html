@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>注册 - 智能排课系统</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa;
+        }
+
+        #register-container {
+            width: 100%;
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .register-logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .register-logo h1 {
+            color: #2c3e50;
+            margin: 0;
+        }
+
+        input[type="text"], input[type="password"], select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .register-button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .register-button:hover {
+            background-color: #45a049;
+        }
+
+        p {
+            text-align: center;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+<!-- 注册界面 -->
+<div id="register-container">
+    <div class="register-logo">
+        <h1>智能排课系统 - 注册</h1>
+    </div>
+    <form id="register-form">
+        <input type="text" name="username" placeholder="用户名" required>
+        <input type="password" name="password" placeholder="密码" required>
+        <input type="password" name="confirm_password" placeholder="确认密码" required>
+        <button type="submit" class="register-button">注册</button>
+    </form>
+    <p>已经有账号？<a href="/" style="color: #4CAF50;">去登录</a></p>
+</div>
+</body>
+</html>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    const apiClient = axios.create({
+        baseURL: 'http://192.168.43.34:5000', // 如果用的是 /api/register，请加上 /api
+        timeout: 10000,
+        headers: { 'Content-Type': 'application/json' }
+    });
+
+    document.getElementById('register-form').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const username = document.querySelector('input[name="username"]').value.trim();
+        const password = document.querySelector('input[name="password"]').value;
+        const confirm = document.querySelector('input[name="confirm_password"]').value;
+
+        if (username.length < 3) {
+            alert("用户名不能少于3个字符！");
+            return;
+        }
+
+        if (password.length < 6) {
+            alert("密码不能少于6位！");
+            return;
+        }
+
+        if (password !== confirm) {
+            alert("两次密码不一致！");
+            return;
+        }
+
+        try {
+            const response = await apiClient.post('/register', { username, password });
+            if (response.data.success) {
+                alert("注册成功！");
+                window.location.href = "/"; // 返回登录页
+            } else {
+                alert(response.data.message || "注册失败！");
+            }
+        } catch (err) {
+            alert("请求失败：" + (err.response?.data?.message || err.message));
+        }
+    });
+</script>
+
